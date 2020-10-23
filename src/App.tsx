@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import moment from 'moment'
 import { Card } from './Component/Card'
 import { position } from './Component'
 import { Bill, Classify } from './type'
+import { values } from 'ramda'
 
 const classify = (input: Bill[]) => {
   return input.reduce((acc: Classify, obj: Bill) => {
@@ -15,6 +16,7 @@ const classify = (input: Bill[]) => {
       acc[tmpDate.getFullYear()][tmpDate.getMonth()][tmpDate.getDay()] = []
 
     acc[tmpDate.getFullYear()][tmpDate.getMonth()][tmpDate.getDay()].push(obj)
+
     return acc
   }, {})
 }
@@ -51,7 +53,25 @@ function App() {
     )
   }
 
-  return <div>{}</div>
+  const showAll = () => {
+    let tmpArray: Bill[] = []
+    Object.keys(data).forEach((year) =>
+      Object.keys(data[year]).forEach((month) =>
+        Object.keys(data[year][month]).forEach((day) =>
+          tmpArray.push.apply(tmpArray, data[year][month][day])
+        )
+      )
+    )
+    return tmpArray.sort((a, b) => parseInt(b.time) - parseInt(a.time))
+  }
+
+  return (
+    <div>
+      {showAll().map((value, index) => (
+        <BillCard key={index} bill={value} />
+      ))}
+    </div>
+  )
 }
 
 export default App
