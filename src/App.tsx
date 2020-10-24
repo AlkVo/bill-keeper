@@ -8,13 +8,17 @@ const classify = (input: Bill[]) => {
   return input.reduce((acc: Classify, obj: Bill) => {
     let tmpDate = new Date(+obj['time'])
 
-    if (!acc[tmpDate.getFullYear()]) acc[tmpDate.getFullYear()] = {}
-    if (!acc[tmpDate.getFullYear()][tmpDate.getMonth()])
-      acc[tmpDate.getFullYear()][tmpDate.getMonth()] = {}
-    if (!acc[tmpDate.getFullYear()][tmpDate.getMonth()][tmpDate.getDay()])
-      acc[tmpDate.getFullYear()][tmpDate.getMonth()][tmpDate.getDay()] = []
+    let year = tmpDate.getFullYear()
+    let month = tmpDate.getMonth() + 1
+    let day = tmpDate.getDate()
 
-    acc[tmpDate.getFullYear()][tmpDate.getMonth()][tmpDate.getDay()].push(obj)
+    console.log('hhhhh', year, month, day)
+
+    if (!acc[year]) acc[year] = {}
+    if (!acc[year][month]) acc[year][month] = {}
+    if (!acc[year][month][day]) acc[year][month][day] = []
+
+    acc[year][month][day].push(obj)
 
     return acc
   }, {})
@@ -25,8 +29,13 @@ const BillCard = (props: { bills: Bill[]; direction: number }) => {
   return (
     <div>
       {bills.map((bill, index) => (
-        <Card key={index}>
+        <position.Card
+          key={index}
+          width={170}
+          height={70}
+          left={direction % 2 > 0 ? '0' : 170}>
           <position.Text
+            fixed={true}
             top={15}
             height={25}
             type={`m${bill.type === '0' ? 'In' : 'Out'}${
@@ -35,14 +44,14 @@ const BillCard = (props: { bills: Bill[]; direction: number }) => {
             {bill.amount}
           </position.Text>
           <position.Text
-            width={70}
+            fixed={true}
             height={15}
             bottom={10}
             type={`time${direction % 2 > 0 ? 'Left' : 'Right'}`}>
             {moment(new Date(parseInt(bill.time))).format('YY-MM-DD hh:mm:ss')}
           </position.Text>
           <div />
-        </Card>
+        </position.Card>
       ))}
     </div>
   )
