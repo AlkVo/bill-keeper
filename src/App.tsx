@@ -20,17 +20,17 @@ const classify = (input: Bill[]) => {
   }, {})
 }
 
-const BillCard = (props: { bills: Bill[]; index: number }) => {
-  const { bills, index } = props
+const BillCard = (props: { bills: Bill[]; direction: number }) => {
+  const { bills, direction } = props
   return (
     <div>
-      {bills.map((bill) => (
-        <Card>
+      {bills.map((bill, index) => (
+        <Card key={index}>
           <position.Text
             top={15}
             height={25}
-            type={`m${bill.time === '0' ? 'In' : 'Out'}${
-              index % 2 > 0 ? 'Left' : 'Right'
+            type={`m${bill.type === '0' ? 'In' : 'Out'}${
+              direction % 2 > 0 ? 'Left' : 'Right'
             }`}>
             {bill.amount}
           </position.Text>
@@ -38,7 +38,7 @@ const BillCard = (props: { bills: Bill[]; index: number }) => {
             width={70}
             height={15}
             bottom={10}
-            type={`time${index % 2 > 0 ? 'Left' : 'Right'}`}>
+            type={`time${direction % 2 > 0 ? 'Left' : 'Right'}`}>
             {moment(new Date(parseInt(bill.time))).format('YY-MM-DD hh:mm:ss')}
           </position.Text>
           <div />
@@ -66,7 +66,7 @@ const showDaysData = (input: { [key: string]: Bill[] }) => {
       return parseInt(b) - parseInt(a)
     })
     .map((key, index) => (
-      <BillCard key={index} index={index} bills={input[key]} />
+      <BillCard key={key} direction={index} bills={input[key]} />
     ))
 }
 
