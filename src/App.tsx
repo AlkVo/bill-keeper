@@ -3,7 +3,6 @@ import moment from 'moment'
 import { Card } from './Component/Card'
 import { position } from './Component'
 import { Bill, Classify } from './type'
-import { values } from 'ramda'
 
 const classify = (input: Bill[]) => {
   return input.reduce((acc: Classify, obj: Bill) => {
@@ -21,6 +20,56 @@ const classify = (input: Bill[]) => {
   }, {})
 }
 
+const BillCard = (props: { bills: Bill[]; index: number }) => {
+  const { bills, index } = props
+  return (
+    <div>
+      {bills.map((bill) => (
+        <Card>
+          <position.Text
+            top={15}
+            height={25}
+            type={`m${bill.time === '0' ? 'In' : 'Out'}${
+              index % 2 > 0 ? 'Left' : 'Right'
+            }`}>
+            {bill.amount}
+          </position.Text>
+          <position.Text
+            width={70}
+            height={15}
+            bottom={10}
+            type={`time${index % 2 > 0 ? 'Left' : 'Right'}`}>
+            {moment(new Date(parseInt(bill.time))).format('YY-MM-DD hh:mm:ss')}
+          </position.Text>
+          <div />
+        </Card>
+      ))}
+    </div>
+  )
+}
+
+const getAllData = (input: Classify) => {
+  let tmpObj: { [key: string]: Bill[] } = {}
+  Object.keys(input).forEach((year) =>
+    Object.keys(input[year]).forEach((month) =>
+      Object.keys(input[year][month]).forEach((day) => {
+        tmpObj[year + month + day] = input[year][month][day]
+      })
+    )
+  )
+  return tmpObj
+}
+
+const showDaysData = (input: { [key: string]: Bill[] }) => {
+  return Object.keys(input)
+    .sort((a, b) => {
+      return parseInt(b) - parseInt(a)
+    })
+    .map((key, index) => (
+      <BillCard key={index} index={index} bills={input[key]} />
+    ))
+}
+
 function App() {
   const [data, setData] = useState<Classify>({})
 
@@ -28,50 +77,7 @@ function App() {
     setData(classify(message))
   })
 
-  const BillCard = (props: { bill: Bill }) => {
-    const { bill } = props
-    return (
-      <Card>
-        <position.Text
-          right={20}
-          top={15}
-          width={70}
-          height={25}
-          type={'mInRight'}>
-          {bill.amount}
-        </position.Text>
-        <position.Text
-          width={70}
-          height={15}
-          right={20}
-          bottom={10}
-          type={'timeRight'}>
-          {moment(new Date(parseInt(bill.time))).format('YY-MM-DD hh:mm:ss')}
-        </position.Text>
-        <div />
-      </Card>
-    )
-  }
-
-  const showAll = () => {
-    let tmpArray: Bill[] = []
-    Object.keys(data).forEach((year) =>
-      Object.keys(data[year]).forEach((month) =>
-        Object.keys(data[year][month]).forEach((day) =>
-          tmpArray.push.apply(tmpArray, data[year][month][day])
-        )
-      )
-    )
-    return tmpArray.sort((a, b) => parseInt(b.time) - parseInt(a.time))
-  }
-
-  return (
-    <div>
-      {showAll().map((value, index) => (
-        <BillCard key={index} bill={value} />
-      ))}
-    </div>
-  )
+  return <div>{showDaysData(getAllData(data))}</div>
 }
 
 export default App
