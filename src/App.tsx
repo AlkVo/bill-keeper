@@ -1,18 +1,15 @@
 import React, { useState } from 'react'
 import moment from 'moment'
-import { Card } from './Component/Card'
 import { position } from './Component'
 import { Bill, Classify } from './type'
 
-const classify = (input: Bill[]) => {
-  return input.reduce((acc: Classify, obj: Bill) => {
+const classify = (data: Bill[]) => {
+  return data.reduce((acc: Classify, obj: Bill) => {
     let tmpDate = new Date(+obj['time'])
 
     let year = tmpDate.getFullYear()
     let month = tmpDate.getMonth() + 1
     let day = tmpDate.getDate()
-
-    console.log('hhhhh', year, month, day)
 
     if (!acc[year]) acc[year] = {}
     if (!acc[year][month]) acc[year][month] = {}
@@ -57,16 +54,39 @@ const BillCard = (props: { bills: Bill[]; direction: number }) => {
   )
 }
 
-const getAllData = (input: Classify) => {
+const getAllData = (data: Classify) => {
   let tmpObj: { [key: string]: Bill[] } = {}
-  Object.keys(input).forEach((year) =>
-    Object.keys(input[year]).forEach((month) =>
-      Object.keys(input[year][month]).forEach((day) => {
-        tmpObj[year + month + day] = input[year][month][day]
+  Object.keys(data).forEach((year) =>
+    Object.keys(data[year]).forEach((month) =>
+      Object.keys(data[year][month]).forEach((day) => {
+        tmpObj[year + month + day] = data[year][month][day]
       })
     )
   )
   return tmpObj
+}
+
+const getMonthData = (data: Classify, date: string) => {
+  let tmpDate = new Date(date)
+  let year = tmpDate.getFullYear()
+  let month = tmpDate.getMonth() + 1
+  let tmpObj: { [key: string]: Bill[] } = {}
+
+  Object.keys(data[year][month]).map((day: string) => {
+    tmpObj[year + month + day] = data[year][month][day]
+  })
+  return tmpObj
+}
+
+const getMonthsString = (data: Classify) => {
+  let tmpArray: string[] = []
+  Object.keys(data).forEach((year) =>
+    tmpArray.push.apply(
+      tmpArray,
+      Object.keys(data[year]).map((month) => `${year}-${month}`)
+    )
+  )
+  return tmpArray
 }
 
 const showDaysData = (input: { [key: string]: Bill[] }) => {
@@ -80,13 +100,28 @@ const showDaysData = (input: { [key: string]: Bill[] }) => {
 }
 
 function App() {
-  const [data, setData] = useState<Classify>({})
+  const [allData, setAllData] = useState<Classify>({})
+  const [month, setMonth] = useState('')
 
   window.ipcRenderer.on('ping', (event: any, message: Bill[]) => {
-    setData(classify(message))
+    setAllData(classify(message))
   })
 
-  return <div>{showDaysData(getAllData(data))}</div>
+  return (
+    <div>
+      <position.ComboBox
+        options={
+          Object.keys(allData).length > 0 ? getMonthsString(allData) : []
+        }
+        handleChange={(value: string) =>
+          setMonth(/\d+/.test(value) ? value : '')
+        }
+      />
+      {showDaysData(
+        month === '' ? getAllData(allData) : getMonthData(allData, month)
+      )}
+    </div>
+  )
 }
 
 export default App
