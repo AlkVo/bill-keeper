@@ -2,6 +2,7 @@ import React from 'react'
 import { mapObjIndexed, pick } from 'ramda'
 import { Text } from './Text'
 import { Card } from './Card'
+import { ComboBox } from './ComboBox'
 
 type PositionProp = {
   left?: number
@@ -40,4 +41,4 @@ const AddPosition = <T extends any>(C: React.ComponentType<T>) => (
 const ___ = <T extends { [key: string]: React.ComponentType<any> }>(all: T) =>
   mapObjIndexed(AddPosition, all)
 
-export const position = ___({ Text, Card })
+export const position = ___({ Text, Card, ComboBox })
