@@ -35,7 +35,6 @@ function createWindow() {
 
   const sendData = (type, arr) => {
     win.webContents.send(type, arr)
-    console.log('two')
   }
 
   win.webContents.on('did-finish-load', () => {
