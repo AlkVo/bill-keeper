@@ -19,6 +19,8 @@ const Div = styled.div((props: { form: FormType }) => ({
   opacity: FormTable[props.form].opacity,
   width: '100%',
   height: '100%',
+  display: 'flex',
+  justifyContent: 'space-between',
 }))
 
 export const View = (props: { form: FormType; children: any }) => {

@@ -2,7 +2,6 @@ import React, { Fragment, useState } from 'react'
 import { AmountType, Bill, NewBill } from '../type'
 import styled from '@emotion/styled'
 import { MdClose } from 'react-icons/md'
-import { IconContext } from 'react-icons'
 import { IconButton } from './IconButton'
 
 const Div = styled.div({
