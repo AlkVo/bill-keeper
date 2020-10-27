@@ -1,10 +1,12 @@
 import React from 'react'
-import { mapObjIndexed, pick } from 'ramda'
+import { mapObjIndexed, pick, prop } from 'ramda'
 import { Text } from './Text'
 import { Card } from './Card'
 import { ComboBox } from './ComboBox'
 import { View } from './View'
 import { AddBill } from './AddBill'
+import { Sum } from './Sum'
+import { IconButton } from './IconButton'
 
 type PositionProp = {
   left?: number | string
@@ -14,6 +16,7 @@ type PositionProp = {
   width?: number
   height?: number
   fixed?: boolean
+  test?: boolean
 }
 
 type PropsType<T> = T extends React.ComponentType<infer R> ? R : any
@@ -35,6 +38,7 @@ const AddPosition = <T extends any>(C: React.ComponentType<T>) => (
     <div
       style={{
         position: props.fixed ? 'absolute' : 'relative',
+        background: props.test ? 'yellow' : 'transparent',
         ...positionObj,
       }}>
       <C {...props} />
@@ -47,4 +51,12 @@ const ___ = <T extends { [key: string]: React.ComponentType<any> }>(all: T) =>
     [P in keyof T]: React.ComponentType<PropsType<T[P]> & PositionProp>
   }
 
-export const position = ___({ Text, Card, ComboBox, View, AddBill })
+export const position = ___({
+  Text,
+  Card,
+  ComboBox,
+  View,
+  AddBill,
+  Sum,
+  IconButton,
+})

@@ -1,4 +1,12 @@
-import { Bill, Classify, Day, Month } from './type'
+import {
+  AmountString,
+  AmountType,
+  Bill,
+  Classify,
+  Day,
+  Month,
+  SumType,
+} from './type'
 
 export const classify = (data: Bill[]) => {
   return data.reduce((acc: Classify, obj: Bill) => {
@@ -68,4 +76,24 @@ export const addBill = (bill: Bill, data: Classify) => {
   monthsObj[month][day].push(bill)
 
   return { ...data, [year]: monthsObj }
+}
+
+export const sum = (data: Day): SumType => {
+  //根据数据分析类型，根据day 获取 []，0 则为 in 的累加 reduce
+  // [] key  push  reduce
+  let tmpBills: Bill[] = []
+  Object.keys(data).forEach((value) =>
+    tmpBills.push.apply(tmpBills, data[value])
+  )
+
+  return {
+    income: tmpBills.reduce((acc: number, value: Bill) => {
+      if (value.type === AmountType['In']) acc += parseInt(value.amount)
+      return acc
+    }, 0),
+    outcome: tmpBills.reduce((acc: number, value: Bill) => {
+      if (value.type === AmountType['Out']) acc += parseInt(value.amount)
+      return acc
+    }, 0),
+  }
 }

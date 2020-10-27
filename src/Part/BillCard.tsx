@@ -20,7 +20,7 @@ export const BillCard = (props: { bills: Bill[]; direction: number }) => {
             height={25}
             // obj.key find key
             type={`m${Object.keys(AmountType).find(
-              (v) => AmountType[v] === bill.type
+              (value) => AmountType[value] === bill.type
             )}${direction % 2 > 0 ? 'Left' : 'Right'}`}>
             {bill.amount}
           </position.Text>

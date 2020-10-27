@@ -53,6 +53,11 @@ export const TextTable: { [key: string]: CombinationType } = {
     font: 'time',
     direction: 'right',
   },
+  sum: {
+    color: 'time',
+    font: 'money',
+    direction: 'right',
+  },
 }
 
 export type Day = { [day: string]: Bill[] }
@@ -62,17 +67,25 @@ export type Classify = {
   [year: string]: Month
 }
 
-export const AmountType: { [key: string]: string } = {
+export type AmountNumber = '0' | '1'
+export type AmountString = 'In' | 'Out'
+
+export const AmountType: { [k in AmountString]: AmountNumber } = {
   In: '0',
   Out: '1',
 }
 
 export type NewBill = {
   amount: string
-  type: string
+  type: AmountNumber
 }
 
 export type Bill = {
   time: string
   category: string
 } & NewBill
+
+export type SumType = {
+  income: number
+  outcome: number
+}
