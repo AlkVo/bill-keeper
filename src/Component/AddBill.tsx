@@ -65,7 +65,6 @@ export const AddBill = (props: {
   const { close, addBill } = props
   const [newBill, setNewBill] = useState<NewBill>({ amount: '0', type: '1' })
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log('name', 'value', e.target.name, e.target.value)
     setNewBill({ ...newBill, [e.target.name]: e.target.value })
   }
 

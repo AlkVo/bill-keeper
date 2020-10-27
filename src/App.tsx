@@ -8,6 +8,7 @@ import {
   getMonthData,
   getMonthsString,
   classify,
+  addBill,
 } from './ProcessBills'
 import { BillCard } from './Part/BillCard'
 import { View } from './Component/View'
