@@ -3,6 +3,7 @@ import { Bill, NewBill } from '../type'
 import styled from '@emotion/styled'
 import { MdClose } from 'react-icons/md'
 import { IconContext } from 'react-icons'
+import { IconButton } from './IconButton'
 
 const Div = styled.div({
   width: 260,
@@ -116,9 +117,7 @@ export const AddBill = (props: {
         </DivRow>
       </DivColumn>
       <CloseButton onClick={close}>
-        <IconContext.Provider value={{ size: '20' }}>
-          <MdClose />
-        </IconContext.Provider>
+        <IconButton icon={MdClose} size={'15'} />
       </CloseButton>
     </Div>
   )

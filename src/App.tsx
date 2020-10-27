@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { position } from './Component'
 import { Bill, Classify, Month } from './type'
-import { Button } from './Component/Button'
+import { AddButton } from './Component/AddButton'
 
 import {
   getAllData,
@@ -11,6 +11,9 @@ import {
 } from './ProcessBills'
 import { BillCard } from './Part/BillCard'
 import { View } from './Component/View'
+import { IconContext } from 'react-icons/lib'
+import { MdAdd } from 'react-icons/md'
+import { IconButton } from './Component/IconButton'
 
 const showDaysData = (input: { [key: string]: Bill[] }) => {
   return Object.keys(input)
@@ -31,29 +34,13 @@ function App() {
     setAllData(classify(message))
   })
 
-  const addBill = (bill: Bill, data: Classify) => {
-    //根据传入时间 取出年月日
-    const tmpDate = new Date(parseInt(bill.time))
-    const year = tmpDate.getFullYear() + ''
-    const month = tmpDate.getMonth() + 1 + ''
-    const day = tmpDate.getDate() + ''
-
-    console.log('+++', year, month, day, bill.time)
-    //年 月 日 判断是否为空，是则创建，否则push
-
-    let monthsObj: Month = {}
-    monthsObj = !data[year] ? {} : allData[year]
-    if (!monthsObj[month]) monthsObj[month] = {}
-    if (!monthsObj[month][day]) monthsObj[month][day] = []
-
-    monthsObj[month][day].push(bill)
-
-    return { ...data, [year]: monthsObj }
-  }
-
   return (
     <div>
-      <Button handleClick={() => setShowAdd(true)} />
+      <IconButton
+        icon={MdAdd}
+        handleClick={() => setShowAdd(true)}
+        size={'25'}
+      />
       <position.ComboBox
         options={
           Object.keys(allData).length > 0 ? getMonthsString(allData) : []
