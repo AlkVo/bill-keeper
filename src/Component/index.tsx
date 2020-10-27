@@ -3,16 +3,20 @@ import { mapObjIndexed, pick } from 'ramda'
 import { Text } from './Text'
 import { Card } from './Card'
 import { ComboBox } from './ComboBox'
+import { View } from './View'
+import { AddBill } from './AddBill'
 
 type PositionProp = {
-  left?: number
-  right?: number
-  top?: number
-  bottom?: number
+  left?: number | string
+  right?: number | string
+  top?: number | string
+  bottom?: number | string
   width?: number
   height?: number
   fixed?: boolean
 }
+
+type PropsType<T> = T extends React.ComponentType<infer R> ? R : any
 
 const AddPosition = <T extends any>(C: React.ComponentType<T>) => (
   props: T & PositionProp
@@ -39,6 +43,8 @@ const AddPosition = <T extends any>(C: React.ComponentType<T>) => (
 }
 
 const ___ = <T extends { [key: string]: React.ComponentType<any> }>(all: T) =>
-  mapObjIndexed(AddPosition, all)
+  mapObjIndexed(AddPosition, all) as {
+    [P in keyof T]: React.ComponentType<PropsType<T[P]> & PositionProp>
+  }
 
-export const position = ___({ Text, Card, ComboBox })
+export const position = ___({ Text, Card, ComboBox, View, AddBill })
