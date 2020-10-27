@@ -1,93 +1,16 @@
 import React, { useState } from 'react'
-import moment from 'moment'
 import { position } from './Component'
-import { Bill, Classify } from './type'
+import { Bill, Classify, Month } from './type'
+import { Button } from './Component/Button'
 
-const classify = (data: Bill[]) => {
-  return data.reduce((acc: Classify, obj: Bill) => {
-    let tmpDate = new Date(+obj['time'])
-
-    let year = tmpDate.getFullYear()
-    let month = tmpDate.getMonth() + 1
-    let day = tmpDate.getDate()
-
-    if (!acc[year]) acc[year] = {}
-    if (!acc[year][month]) acc[year][month] = {}
-    if (!acc[year][month][day]) acc[year][month][day] = []
-
-    acc[year][month][day].push(obj)
-
-    return acc
-  }, {})
-}
-
-const BillCard = (props: { bills: Bill[]; direction: number }) => {
-  const { bills, direction } = props
-  return (
-    <div>
-      {bills.map((bill, index) => (
-        <position.Card
-          key={index}
-          width={170}
-          height={70}
-          left={direction % 2 > 0 ? '0' : 170}>
-          <position.Text
-            fixed={true}
-            top={15}
-            height={25}
-            type={`m${bill.type === '0' ? 'In' : 'Out'}${
-              direction % 2 > 0 ? 'Left' : 'Right'
-            }`}>
-            {bill.amount}
-          </position.Text>
-          <position.Text
-            fixed={true}
-            height={15}
-            bottom={10}
-            type={`time${direction % 2 > 0 ? 'Left' : 'Right'}`}>
-            {moment(new Date(parseInt(bill.time))).format('YY-MM-DD hh:mm:ss')}
-          </position.Text>
-          <div />
-        </position.Card>
-      ))}
-    </div>
-  )
-}
-
-const getAllData = (data: Classify) => {
-  let tmpObj: { [key: string]: Bill[] } = {}
-  Object.keys(data).forEach((year) =>
-    Object.keys(data[year]).forEach((month) =>
-      Object.keys(data[year][month]).forEach((day) => {
-        tmpObj[year + month + day] = data[year][month][day]
-      })
-    )
-  )
-  return tmpObj
-}
-
-const getMonthData = (data: Classify, date: string) => {
-  let tmpDate = new Date(date)
-  let year = tmpDate.getFullYear()
-  let month = tmpDate.getMonth() + 1
-  let tmpObj: { [key: string]: Bill[] } = {}
-
-  Object.keys(data[year][month]).map((day: string) => {
-    tmpObj[year + month + day] = data[year][month][day]
-  })
-  return tmpObj
-}
-
-const getMonthsString = (data: Classify) => {
-  let tmpArray: string[] = []
-  Object.keys(data).forEach((year) =>
-    tmpArray.push.apply(
-      tmpArray,
-      Object.keys(data[year]).map((month) => `${year}-${month}`)
-    )
-  )
-  return tmpArray
-}
+import {
+  getAllData,
+  getMonthData,
+  getMonthsString,
+  classify,
+} from './ProcessBills'
+import { BillCard } from './Part/BillCard'
+import { View } from './Component/View'
 
 const showDaysData = (input: { [key: string]: Bill[] }) => {
   return Object.keys(input)
@@ -101,24 +24,61 @@ const showDaysData = (input: { [key: string]: Bill[] }) => {
 
 function App() {
   const [allData, setAllData] = useState<Classify>({})
-  const [month, setMonth] = useState('')
+  const [currentMonth, setCurrentMonth] = useState('')
+  const [showAdd, setShowAdd] = useState(false)
 
   window.ipcRenderer.on('ping', (event: any, message: Bill[]) => {
     setAllData(classify(message))
   })
 
+  const addBill = (bill: Bill, data: Classify) => {
+    //根据传入时间 取出年月日
+    const tmpDate = new Date(parseInt(bill.time))
+    const year = tmpDate.getFullYear() + ''
+    const month = tmpDate.getMonth() + 1 + ''
+    const day = tmpDate.getDate() + ''
+
+    console.log('+++', year, month, day, bill.time)
+    //年 月 日 判断是否为空，是则创建，否则push
+
+    let monthsObj: Month = {}
+    monthsObj = !data[year] ? {} : allData[year]
+    if (!monthsObj[month]) monthsObj[month] = {}
+    if (!monthsObj[month][day]) monthsObj[month][day] = []
+
+    monthsObj[month][day].push(bill)
+
+    return { ...data, [year]: monthsObj }
+  }
+
   return (
     <div>
+      <Button handleClick={() => setShowAdd(true)} />
       <position.ComboBox
         options={
           Object.keys(allData).length > 0 ? getMonthsString(allData) : []
         }
         handleChange={(value: string) =>
-          setMonth(/\d+/.test(value) ? value : '')
+          setCurrentMonth(/\d+/.test(value) ? value : '')
         }
       />
       {showDaysData(
-        month === '' ? getAllData(allData) : getMonthData(allData, month)
+        currentMonth === ''
+          ? getAllData(allData)
+          : getMonthData(allData, currentMonth)
+      )}
+
+      {showAdd && (
+        <position.View fixed={true} left={0} top={0} form={'Normal'}>
+          <View form={'Add'}>{''}</View>
+          <position.AddBill
+            fixed={true}
+            left={'50%'}
+            top={'50%'}
+            close={() => setShowAdd(false)}
+            addBill={(newBill: Bill) => setAllData(addBill(newBill, allData))}
+          />
+        </position.View>
       )}
     </div>
   )

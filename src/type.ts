@@ -55,13 +55,16 @@ export const TextTable: { [key: string]: CombinationType } = {
   },
 }
 
-export type Bill = {
-  type: string
-  time: string
-  category: string
-  amount: string
-}
+export type Day = { [day: string]: Bill[] }
+export type Month = { [month: string]: Day }
 
 export type Classify = {
-  [key: string]: { [key: string]: { [key: string]: Bill[] } }
+  [year: string]: Month
 }
+
+export type NewBill = { amount: string; type: '0' | '1' }
+
+export type Bill = {
+  time: string
+  category: string
+} & NewBill
