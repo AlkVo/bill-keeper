@@ -1,4 +1,4 @@
-import { Bill, Classify, Day } from './type'
+import { Bill, Classify, Day, Month } from './type'
 
 export const classify = (data: Bill[]) => {
   return data.reduce((acc: Classify, obj: Bill) => {
@@ -51,4 +51,23 @@ export const getMonthsString = (data: Classify) => {
     )
   )
   return tmpArray
+}
+
+export const addBill = (bill: Bill, data: Classify) => {
+  //根据传入时间 取出年月日
+  const tmpDate = new Date(parseInt(bill.time))
+  const year = tmpDate.getFullYear() + ''
+  const month = tmpDate.getMonth() + 1 + ''
+  const day = tmpDate.getDate() + ''
+
+  //年 月 日 判断是否为空，是则创建，否则push
+
+  let monthsObj: Month = {}
+  monthsObj = !data[year] ? {} : data[year]
+  if (!monthsObj[month]) monthsObj[month] = {}
+  if (!monthsObj[month][day]) monthsObj[month][day] = []
+
+  monthsObj[month][day].push(bill)
+
+  return { ...data, [year]: monthsObj }
 }
