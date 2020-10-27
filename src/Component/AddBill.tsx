@@ -56,14 +56,17 @@ const CloseButton = styled.button({
   background: 'transparent',
   outline: 'none',
 })
+
 export const AddBill = (props: {
   close: () => void
   addBill: (bill: Bill) => void
 }) => {
   const { close, addBill } = props
-  const [newBill, setNewBill] = useState<NewBill>({ amount: '0', type: 'out' })
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+  const [newBill, setNewBill] = useState<NewBill>({ amount: '0', type: '1' })
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log('name', 'value', e.target.name, e.target.value)
     setNewBill({ ...newBill, [e.target.name]: e.target.value })
+  }
 
   return (
     <Div>
@@ -79,9 +82,9 @@ export const AddBill = (props: {
             <input
               type='radio'
               name={'type'}
-              value={'out'}
-              checked
+              value={'1'}
               onChange={handleChange}
+              defaultChecked
             />
             支出
           </label>
@@ -89,7 +92,7 @@ export const AddBill = (props: {
             <input
               type='radio'
               name={'type'}
-              value={'in'}
+              value={'0'}
               onChange={handleChange}
             />
             收入

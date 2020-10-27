@@ -62,7 +62,12 @@ export type Classify = {
   [year: string]: Month
 }
 
-export type NewBill = { amount: string; type: '0' | '1' }
+export const AmountType: { [key: string]: string } = {
+  0: 'In',
+  1: 'Out',
+}
+
+export type NewBill = { amount: string; type: keyof typeof AmountType }
 
 export type Bill = {
   time: string
