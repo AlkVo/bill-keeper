@@ -18,9 +18,10 @@ export const BillCard = (props: { bills: Bill[]; direction: number }) => {
             fixed={true}
             top={15}
             height={25}
-            type={`m${AmountType[bill.type]}${
-              direction % 2 > 0 ? 'Left' : 'Right'
-            }`}>
+            // obj.key find key
+            type={`m${Object.keys(AmountType).find(
+              (v) => AmountType[v] === bill.type
+            )}${direction % 2 > 0 ? 'Left' : 'Right'}`}>
             {bill.amount}
           </position.Text>
           <position.Text

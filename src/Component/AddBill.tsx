@@ -1,5 +1,5 @@
 import React, { Fragment, useState } from 'react'
-import { Bill, NewBill } from '../type'
+import { AmountType, Bill, NewBill } from '../type'
 import styled from '@emotion/styled'
 import { MdClose } from 'react-icons/md'
 import { IconContext } from 'react-icons'
@@ -63,7 +63,10 @@ export const AddBill = (props: {
   addBill: (bill: Bill) => void
 }) => {
   const { close, addBill } = props
-  const [newBill, setNewBill] = useState<NewBill>({ amount: '0', type: '1' })
+  const [newBill, setNewBill] = useState<NewBill>({
+    amount: '0',
+    type: AmountType.Out,
+  })
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNewBill({ ...newBill, [e.target.name]: e.target.value })
   }
@@ -82,7 +85,7 @@ export const AddBill = (props: {
             <input
               type='radio'
               name={'type'}
-              value={'1'}
+              value={AmountType.Out}
               onChange={handleChange}
               defaultChecked
             />
@@ -92,7 +95,7 @@ export const AddBill = (props: {
             <input
               type='radio'
               name={'type'}
-              value={'0'}
+              value={AmountType.In}
               onChange={handleChange}
             />
             收入

@@ -63,11 +63,14 @@ export type Classify = {
 }
 
 export const AmountType: { [key: string]: string } = {
-  0: 'In',
-  1: 'Out',
+  In: '0',
+  Out: '1',
 }
 
-export type NewBill = { amount: string; type: keyof typeof AmountType }
+export type NewBill = {
+  amount: string
+  type: string
+}
 
 export type Bill = {
   time: string
