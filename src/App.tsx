@@ -13,7 +13,6 @@ import {
 import { BillCard } from './Part/BillCard'
 import { View } from './Component/View'
 import { MdAdd } from 'react-icons/md'
-import { IconButton } from './Component/IconButton'
 
 const showDaysData = (input: Day) => {
   return Object.keys(input)
@@ -36,14 +35,7 @@ function App() {
 
   return (
     <div>
-      <position.View form={'Normal'}>
-        <position.IconButton
-          width={25}
-          height={25}
-          icon={MdAdd}
-          handleClick={() => setShowAdd(true)}
-          size={'25'}
-        />
+      <position.View form={'Flex'}>
         <position.ComboBox
           width={100}
           height={20}
@@ -54,6 +46,7 @@ function App() {
             setCurrentMonth(/\d+/.test(value) ? value : '')
           }
         />
+
         <position.Sum
           width={200}
           height={10}
@@ -64,13 +57,31 @@ function App() {
           )}
         />
       </position.View>
-
-      {showDaysData(
-        currentMonth === ''
-          ? getAllData(allData)
-          : getMonthData(allData, currentMonth)
-      )}
-
+      <position.View
+        form={'TurnLeft50Per'}
+        width={25}
+        height={25}
+        left={'50%'}
+        fixed={true}
+        top={15}>
+        <position.IconButton
+          icon={MdAdd}
+          handleClick={() => setShowAdd(true)}
+          size={'25'}
+        />
+      </position.View>
+      <position.View
+        form={'TurnLeft50Per'}
+        width={340}
+        height={600}
+        left={'50%'}
+        top={15}>
+        {showDaysData(
+          currentMonth === ''
+            ? getAllData(allData)
+            : getMonthData(allData, currentMonth)
+        )}
+      </position.View>
       {showAdd && (
         <position.View fixed={true} left={0} top={0} form={'Normal'}>
           <View form={'Add'}>{''}</View>
